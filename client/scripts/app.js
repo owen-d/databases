@@ -41,7 +41,7 @@ $(function() {
 
       // POST the message to the server
       $.ajax({
-        url: app.server,
+        url: app.server+'messages',
         type: 'POST',
         data: JSON.stringify(data),
         contentType: 'application/json',
@@ -57,27 +57,28 @@ $(function() {
     },
     fetch: function(animate) {
       $.ajax({
-        url: app.server,
+        url: app.server+'messages',
         type: 'GET',
         contentType: 'application/json',
-        data: { order: '-createdAt'},
+        // data: { order: '-createdAt'},
         success: function(data) {
           console.log('chatterbox: Messages fetched');
-
+          data = JSON.parse(data);
           // Don't bother if we have nothing to work with
-          if (!data.results || !data.results.length) { return; }
+          console.log(data);
+          if (!data['results'] || !data['results'].length) { return; }
 
           // Get the last message
-          var mostRecentMessage = data.results[data.results.length-1];
+          var mostRecentMessage = data['results'][data['results'].length-1];
           var displayedRoom = $('.chat span').first().data('roomname');
           app.stopSpinner();
           // Only bother updating the DOM if we have a new message
           if (mostRecentMessage.objectId !== app.lastMessageId || app.roomname !== displayedRoom) {
             // Update the UI with the fetched rooms
-            app.populateRooms(data.results);
+            app.populateRooms(data['results']);
 
             // Update the UI with the fetched messages
-            app.populateMessages(data.results, animate);
+            app.populateMessages(data['results'], animate);
 
             // Store the ID of the most recent message
             app.lastMessageId = mostRecentMessage.objectId;
@@ -97,6 +98,7 @@ $(function() {
       app.clearMessages();
       app.stopSpinner();
       if (Array.isArray(results)) {
+        // console.log('is array');
         // Add all fetched messages
         results.forEach(app.addMessage);
       }
@@ -151,14 +153,14 @@ $(function() {
         // Add in the message data using DOM methods to avoid XSS
         // Store the username in the element's data
         var $username = $('<span class="username"/>');
-        $username.text(data.username+': ').attr('data-username', data.username).attr('data-roomname',data.roomname).appendTo($chat);
+        $username.text(data['name']+': ').attr('data-username', data['name']).attr('data-roomname',data['room']).appendTo($chat);
 
         // Add the friend class
-        if (app.friends[data.username] === true)
+        if (app.friends[data['name']] === true)
           $username.addClass('friend');
 
         var $message = $('<br><span/>');
-        $message.text(data.text).appendTo($chat);
+        $message.text(data['message']).appendTo($chat);
 
         // Add the message to the UI
         app.$chats.append($chat);
@@ -210,9 +212,10 @@ $(function() {
     },
     handleSubmit: function(evt) {
       var message = {
-        username: app.username,
-        text: app.$message.val(),
-        roomname: app.roomname || 'lobby'
+        userID: 123,
+        user: app.username,
+        message: app.$message.val(),
+        room: app.roomname || 'lobby'
       };
 
       app.send(message);

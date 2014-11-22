@@ -1,6 +1,7 @@
 var models = require('../models');
 var bluebird = require('bluebird');
 var db = require('../db/index.js');
+var url = require('url');
 
 
 
@@ -14,7 +15,7 @@ module.exports = {
     post: function (req, res) {
       //on data
       //on end insert data into database.
-      db.postMessage(req.body);
+      db.postMessages(res, req.body);
       // console.log(req.body);
       // db.postMessages();
       res.end();
@@ -29,6 +30,7 @@ module.exports = {
 
     },
     post: function (req, res) {
+      var userObj = {name: 'name'}
       db.postUsers(req.body);
       res.end();
       //post username into user table

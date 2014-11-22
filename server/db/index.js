@@ -17,20 +17,32 @@ var query = function(query, callback){
 
 //special callbacks for query-----------------------------
 var getMessages = function(res){
-  query('SELECT user.name, messages.message, messages.time FROM messages INNER JOIN user ON user.userID = messages.userID', function(err, rows, fields) {
+  query('SELECT user.name, messages.message FROM messages INNER JOIN user ON user.userID = messages.userID', function(err, rows, fields) {
     if (err) throw err;
 
     console.log('rows:', rows);
-    res.end(JSON.stringify(rows));
+    var returned = {};
+    returned.results = rows;
+    res.end(JSON.stringify(returned));
   });
 };
 var postMessages = function(res, obj) {
+  // obj = {name: 'tim', message: 'hi', room: 'lobby', userID: 123};
 
-  query('INSERT INTO messages (name, message, time, room, userID) VALUES ('+obj.name+', '+obj.message+', '+obj.time+', '+obj.room+', '+obj.userID+');', function(err, rows, fields){
+  // console.log('INSERT INTO messages ("name", "message", "time", "room", "userID") VALUES ("'+obj.name+'", "'+obj.message+'", "'+obj.time+'", "'+obj.room+'", "'+obj.userID+'");')
+
+  query("INSERT INTO messages (message, room, userID) VALUES ('"+obj.message+"', '"+obj.room+"', "+obj.userID+");", function(err, rows, fields){
     if (err) throw err;
-    res.end('message sent');
+
+    res.end('Message added.');
   });
 };
+
+  // query("INSERT INTO messages (message, room, userID) VALUES ('hi', 'lobby', 123);", function(err, rows, fields){
+  //   if (err) throw err;
+  //   res.end('message sent');
+  // });
+// };
 
 var getUsers = function(res){
   query('SELECT user.userID, user.name FROM user', function(err, rows, fields){
