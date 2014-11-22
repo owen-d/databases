@@ -13,6 +13,7 @@ CREATE TABLE user (userID int(5), name VARCHAR(20)
 );
 
 INSERT INTO messages (userID, time, room, message) values (123, 321, 'asdadlkasdlksad', 'sadafasd');
+INSERT INTO user (userID, name) values (123, 'john');
 /* Create other tables and define schemas for them here! */
 
 
