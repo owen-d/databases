@@ -1,14 +1,14 @@
 var models = require('../models');
 var bluebird = require('bluebird');
-var db = require('./db/index.js');
+var db = require('../db/index.js');
 
 
 
 module.exports = {
   messages: {
     get: function (req, res) {
-      res.end('works');
-      res.end(console.log(db.getMessages()), db.getMessages());
+      // res.end('hi');
+      db.getMessages(res);
       //get messages from message table in database
     }, // a function which handles a get request for all messages
     post: function (req, res) {

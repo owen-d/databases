@@ -16,12 +16,16 @@ var query = function(query, callback){
 }
 
 //special callbacks for query-----------------------------
-var getMessages = query('SELECT * FROM MESSAGES', function(err, rows, fields) {
-  if (err) throw err;
+var getMessages = function(res){
+  query('SELECT * FROM MESSAGES', function(err, rows, fields) {
+    if (err) throw err;
 
-  console.log('rows:', rows, 'fields:', fields);
-  return(rows);
-});
+    console.log('rows:', rows);
+    res.end(JSON.stringify(rows));
+  });
+};
+
+
 
 //var postMessages
 
